@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DarkSkyWPF.DarkSky
+﻿namespace DarkSkyWPF.DarkSky
 {
-    public class City
-    {
-        public string Name { get; set; }
+  /// <summary>
+  /// Model class for City objects. A new DarkSky Forecast Request can be created via the city's Latitude and Longitude properties.
+  /// </summary>
+  public class City
+  {
+    public string Name { get; set; }
 
-        //rethink type
-        public string Latitude { get; set; }
+    //rethink type if used other than in urls
+    public string Latitude { get; set; }
 
-        public string Longitude { get; set; }
-    }
+    public string Longitude { get; set; }
+  }
 }

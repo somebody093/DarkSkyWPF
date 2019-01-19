@@ -8,16 +8,16 @@ using Unity;
 
 namespace DarkSkyWPF.Startup
 {
-    public static class DependencyConfiguration
+  public static class DependencyConfiguration
+  {
+    public static IUnityContainer BuildUnityContainer()
     {
-        public static IUnityContainer BuildUnityContainer()
-        {
-            IUnityContainer container = new UnityContainer();
+      IUnityContainer container = new UnityContainer();
 
-            container.RegisterType<IWeatherDataRetriever, WeatherDataRetriever>();
-            container.RegisterType<IDarkSkyService, DarkSkyService>();
+      container.RegisterType<IWeatherDataRetriever, WeatherDataRetriever>();
+      container.RegisterType<IDarkSkyService, DarkSkyService>();
 
-            return container;
-        }
+      return container;
     }
+  }
 }

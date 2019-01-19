@@ -88,11 +88,16 @@
     </ApplicationDefinition>
     <Compile Include="DarkSky\City.cs" />
     <Compile Include="DarkSky\DarkSkyService.cs" />
+    <Compile Include="DarkSky\ExcludeParameter.cs" />
     <Compile Include="DarkSky\IWeatherDataRetriever.cs" />
-    <Compile Include="DarkSky\WeatherData.cs" />
+    <Compile Include="DarkSky\JSONModels\RequestMetaData.cs" />
+    <Compile Include="DarkSky\JSONModels\WeatherAlert.cs" />
+    <Compile Include="DarkSky\JSONModels\WeatherDataRoot.cs" />
+    <Compile Include="DarkSky\JSONModels\WeatherDetails.cs" />
     <Compile Include="DarkSky\WeatherDataRetriever.cs" />
     <Compile Include="Startup\DependencyConfiguration.cs" />
     <Compile Include="Validation\ArgumentValidation.cs" />
+    <Compile Include="WeatherViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
