@@ -7,28 +7,115 @@
         xmlns:local="clr-namespace:DarkSkyWPF.ViewModels"
         xmlns:mvvmlight="http://www.galasoft.ch/mvvmlight"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Seven's Weather" Height="450" Width="800">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <mvvmlight:EventToCommand Command="{Binding LoadDataCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
+    <Window.Resources>
+        <DataTemplate x:Key="dailyWeatherTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Grid.ColumnSpan="3" Content="{Binding Path=Summary}"></Label>
+                <TextBlock Grid.Row="1" Grid.Column="0" Margin="3" VerticalAlignment="Center">PICTURE</TextBlock>
+                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Margin="3" VerticalContentAlignment="Center">Temperature:</Label>
+                        <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=TemperatureCalculated}"></TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Margin="3" VerticalContentAlignment="Center">Feels-like:</Label>
+                        <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=ApparentTemperatureCalculated}"></TextBlock>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Margin="3" VerticalContentAlignment="Center">Humidity:</Label>
+                        <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=Humidity}"></TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Margin="3" VerticalContentAlignment="Center">UVIndex:</Label>
+                        <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=UVIndex}"></TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Margin="3" VerticalContentAlignment="Center">WindSpeed:</Label>
+                        <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=WindSpeed}"></TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
+
     <Grid>
         <StackPanel>
-            <TabControl ItemsSource="{Binding RequiredListOfCities}">
+            <TabControl ItemsSource="{Binding AvailableWeatherInfo}">
                 <TabControl.ItemTemplate>
                     <DataTemplate>
                         <TextBlock
-                    Text="{Binding Name}" />
+                    Text="{Binding CityName}" />
                     </DataTemplate>
                 </TabControl.ItemTemplate>
-                <!--<TabControl.ContentTemplate>
+                <TabControl.ContentTemplate>
                     <DataTemplate>
-                        <TextBlock
-                    Text="{Binding Content}" />
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Label Grid.Row="0" Grid.ColumnSpan="3" Content="{Binding Path=CurrentWeather.Summary}"></Label>
+                                <TextBlock Grid.Row="1" Grid.Column="0" Margin="3" VerticalAlignment="Center">PICTURE</TextBlock>
+                                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Margin="3" VerticalContentAlignment="Center">Temperature:</Label>
+                                        <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=CurrentWeather.Temperature}"></TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Margin="3" VerticalContentAlignment="Center">Feels-like:</Label>
+                                        <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=CurrentWeather.ApparentTemperature}"></TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                                <!-- duplicate, how to merge with daily?? -->
+                                <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Vertical">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Margin="3" VerticalContentAlignment="Center">Humidity:</Label>
+                                        <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=CurrentWeather.Humidity}"></TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Margin="3" VerticalContentAlignment="Center">UVIndex:</Label>
+                                        <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=CurrentWeather.UVIndex}"></TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Margin="3" VerticalContentAlignment="Center">WindSpeed:</Label>
+                                        <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=CurrentWeather.WindSpeed}"></TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                            <ItemsControl ItemsSource="{Binding DailyWeather.WeatherDetails}" ItemTemplate="{StaticResource dailyWeatherTemplate}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Vertical"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                        </StackPanel>
                     </DataTemplate>
-                </TabControl.ContentTemplate>-->
+                </TabControl.ContentTemplate>
             </TabControl>
         </StackPanel>
     </Grid>

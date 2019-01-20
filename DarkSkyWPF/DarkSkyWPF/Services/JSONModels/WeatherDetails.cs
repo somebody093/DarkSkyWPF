@@ -1,13 +1,18 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace DarkSkyWPF.Services.JSONModels
 {
   /// <summary>
   /// JSON Model helper class to be able to store the different Forecast Request's data points' detailed data. Each MultipleDataPointsWeatherCondition (minutely, hourly and daily) section contains multiple pieces of WeatherDetails inside their [data] section.
   /// <para>The descriptions are sometimes outdated even on DarkSky.net but they are quoted from there.</para>
+  /// todo: kiegészíteni
   /// </summary>
   public class WeatherDetails
   {
+    private double? _apparentTemperatureCalculated;
+    private double? _temperatureCalculated;
+
     /// <summary>
     /// The apparent (or “feels like”) temperature in degrees Fahrenheit. Optional, only on hourly.
     /// </summary>
@@ -25,6 +30,32 @@ namespace DarkSkyWPF.Services.JSONModels
     /// </summary>
     [JsonProperty("apparentTemperatureLow")]
     public double ApparentTemperatureLowest { get; private set; }
+
+    /// <summary>
+    /// tba
+    /// </summary>
+    [JsonIgnore]
+    public double? ApparentTemperatureCalculated
+    {
+      get
+      {
+        try
+        {
+          if (_apparentTemperatureCalculated != null)
+          {
+            return _apparentTemperatureCalculated;
+          }
+
+          _apparentTemperatureCalculated = (ApparentTemperatureHighest + ApparentTemperatureLowest) / 2;
+          return _apparentTemperatureCalculated;
+        }
+        catch (Exception)
+        {
+          //tba
+          return null;
+        }
+      }
+    }
 
     /// <summary>
     /// The sea-level air pressure in millibars.
@@ -67,6 +98,32 @@ namespace DarkSkyWPF.Services.JSONModels
     /// </summary>
     [JsonProperty("temperatureLow")]
     public double TemperatureLowest { get; private set; }
+
+    /// <summary>
+    /// tba
+    /// </summary>
+    [JsonIgnore]
+    public double? TemperatureCalculated
+    {
+      get
+      {
+        try
+        {
+          if (_temperatureCalculated != null)
+          {
+            return _temperatureCalculated;
+          }
+
+          _temperatureCalculated = (TemperatureHighest + TemperatureLowest) / 2;
+          return _temperatureCalculated;
+        }
+        catch (Exception)
+        {
+          //tba
+          return null;
+        }
+      }
+    }
 
     /// <summary>
     /// The UNIX time at which this data point begins.

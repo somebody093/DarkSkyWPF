@@ -14,8 +14,8 @@ namespace DarkSkyWPF.ViewModels
   {
     private readonly ICityService _cityService;
     private readonly IDarkSkyService _darkSkyService;
-    private IEnumerable<WeatherDataRoot> _availableWeatherInfo;
-    private ObservableCollection<City> _requiredListOfCities;
+    private ObservableCollection<WeatherDataRoot> _availableWeatherInfo;
+    private IEnumerable<City> _requiredListOfCities;
 
     private RelayCommand _loadDataCommand;
 
@@ -24,34 +24,49 @@ namespace DarkSkyWPF.ViewModels
     {
       _cityService = ArgumentValidation.ThrowIfNull<ICityService>(cityService, nameof(cityService));
       _darkSkyService = ArgumentValidation.ThrowIfNull<IDarkSkyService>(darkSkyService, nameof(darkSkyService));
+      _availableWeatherInfo = new ObservableCollection<WeatherDataRoot>();
     }
 
-    public ObservableCollection<City> RequiredListOfCities
+    public ObservableCollection<WeatherDataRoot> AvailableWeatherInfo
     {
       get
       {
-        return _requiredListOfCities;
+        return _availableWeatherInfo;
       }
       private set
       {
-        if (_requiredListOfCities == value)
+        if (_availableWeatherInfo == value)
         {
           return;
         }
 
-        _requiredListOfCities = value;
-        RaisePropertyChanged(nameof(RequiredListOfCities));
+        _availableWeatherInfo = value;
+        RaisePropertyChanged(nameof(AvailableWeatherInfo));
       }
     }
 
     public RelayCommand LoadDataCommand => _loadDataCommand ?? (_loadDataCommand = new RelayCommand(() => LoadData()));
 
-    internal async Task LoadData()
+    private async Task LoadData()
     {
       try
       {
-        RequiredListOfCities = new ObservableCollection<City>(_cityService.AvilableCities);
-        _availableWeatherInfo = await _darkSkyService.GetWeatherDataForMultipleCities(_requiredListOfCities);
+        if (_requiredListOfCities != null)
+        {
+          return;
+        }
+
+        _requiredListOfCities = _cityService.AvilableCities;
+        //could be split to different chunks as well like 2 each or sg.
+        foreach (City city in _requiredListOfCities)
+        {
+          WeatherDataRoot weatherInfo = await _darkSkyService.GetWeatherDataForCity(city);
+          AvailableWeatherInfo.Add(weatherInfo);
+        }
+
+        //testing what is quicker in terms of loading data
+        //IEnumerable<WeatherDataRoot> availableWeatherInfo  = await _darkSkyService.GetWeatherDataForMultipleCities(_requiredListOfCities);
+        //AvailableWeatherInfo = new ObservableCollection<WeatherDataRoot>(availableWeatherInfo);
       }
       catch (Exception)
       {
