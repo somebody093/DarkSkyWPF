@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace DarkSkyWPF.Services.JSONModels
+namespace DarkSkyWPF.Services.DarkSky.JSONModels
 {
   /// <summary>
   /// The DarkSky API's Forecast Request's response parser root object.
@@ -9,7 +9,7 @@ namespace DarkSkyWPF.Services.JSONModels
   public class WeatherDataRoot
   {
     /// <summary>
-    /// 
+    /// City name appended after parsing based-on the city model object that was used for the request.
     /// </summary>
     [JsonIgnore]
     public string CityName { get; set; }
@@ -56,11 +56,30 @@ namespace DarkSkyWPF.Services.JSONModels
   /// </summary>
   public class WeatherCondition
   {
+    private string _imageSource;
+
     [JsonProperty("summary")]
     public string Summary { get; private set; }
 
     [JsonProperty("icon")]
-    public string Icon { get; private set; }
+    public IconValue Icon { get; private set; }
+
+    /// <summary>
+    /// Used to be able to locate the replacement of the Icon string; an actual image resource for the ui
+    /// </summary>
+    [JsonIgnore]
+    public string ImageSource
+    {
+      get
+      {
+        if (_imageSource == null)
+        {
+          _imageSource = @"\Images\" + System.Enum.GetName(typeof(IconValue), Icon) + ".png";
+          return _imageSource;
+        }
+        return _imageSource;
+      }
+    }
   }
 
   /// <summary>
@@ -81,7 +100,7 @@ namespace DarkSkyWPF.Services.JSONModels
     public double AtmosphericPressure { get; private set; }
 
     [JsonProperty("time")]
-    public long UNIXTime { get; private set; }
+    public double UNIXTime { get; private set; }
 
     [JsonProperty("uvIndex")]
     public double UVIndex { get; private set; }

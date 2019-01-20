@@ -1,17 +1,18 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace DarkSkyWPF.Services.JSONModels
+namespace DarkSkyWPF.Services.DarkSky.JSONModels
 {
   /// <summary>
   /// JSON Model helper class to be able to store the different Forecast Request's data points' detailed data. Each MultipleDataPointsWeatherCondition (minutely, hourly and daily) section contains multiple pieces of WeatherDetails inside their [data] section.
   /// <para>The descriptions are sometimes outdated even on DarkSky.net but they are quoted from there.</para>
-  /// todo: kiegészíteni
+  /// <para>This class also calculates the missing averages from the daily fields</para>
   /// </summary>
   public class WeatherDetails
   {
     private double? _apparentTemperatureCalculated;
     private double? _temperatureCalculated;
+    private string _imageSource;
 
     /// <summary>
     /// The apparent (or “feels like”) temperature in degrees Fahrenheit. Optional, only on hourly.
@@ -32,7 +33,7 @@ namespace DarkSkyWPF.Services.JSONModels
     public double ApparentTemperatureLowest { get; private set; }
 
     /// <summary>
-    /// tba
+    /// Simple average ApparentTemperature due to the missing original property on daily objects
     /// </summary>
     [JsonIgnore]
     public double? ApparentTemperatureCalculated
@@ -67,7 +68,24 @@ namespace DarkSkyWPF.Services.JSONModels
     /// The machine-readable icon suggestion for a data section entity (an hour, minute or day).
     /// </summary>
     [JsonProperty("icon")]
-    public string Icon { get; private set; }
+    public IconValue Icon { get; private set; }
+
+    /// <summary>
+    /// Used to be able to locate the replacement of the Icon string; an actual image resource for the ui
+    /// </summary>
+    [JsonIgnore]
+    public string ImageSource
+    {
+      get
+      {
+        if (_imageSource == null)
+        {
+          _imageSource = @"\Images\" + System.Enum.GetName(typeof(IconValue), Icon) + ".png";
+          return _imageSource;
+        }
+        return _imageSource;
+      }
+    }
 
     /// <summary>
     /// The relative humidity, between 0 and 1, inclusive.
@@ -100,7 +118,7 @@ namespace DarkSkyWPF.Services.JSONModels
     public double TemperatureLowest { get; private set; }
 
     /// <summary>
-    /// tba
+    /// Simple average Temperature calculated due to the missing original property on daily objects
     /// </summary>
     [JsonIgnore]
     public double? TemperatureCalculated
@@ -129,7 +147,7 @@ namespace DarkSkyWPF.Services.JSONModels
     /// The UNIX time at which this data point begins.
     /// </summary>
     [JsonProperty("time")]
-    public long UNIXTime { get; private set; }
+    public double UNIXTime { get; private set; }
 
     /// <summary>
     /// The UV index.

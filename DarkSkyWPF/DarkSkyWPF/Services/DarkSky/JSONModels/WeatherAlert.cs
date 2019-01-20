@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DarkSkyWPF.Services.JSONModels
+namespace DarkSkyWPF.Services.DarkSky.JSONModels
 {
   /// <summary>
   /// JSON Model helper class to be able to parse severe weather alert information for the requested location.

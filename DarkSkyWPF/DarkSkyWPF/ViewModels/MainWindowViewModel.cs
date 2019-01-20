@@ -1,5 +1,6 @@
-﻿using DarkSkyWPF.Services;
-using DarkSkyWPF.Services.JSONModels;
+﻿using DarkSkyWPF.Services.Cities;
+using DarkSkyWPF.Services.DarkSky;
+using DarkSkyWPF.Services.DarkSky.JSONModels;
 using DarkSkyWPF.Validation;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;

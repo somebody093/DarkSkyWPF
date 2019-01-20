@@ -1,4 +1,5 @@
-﻿using DarkSkyWPF.Services.JSONModels;
+﻿using DarkSkyWPF.Services.Cities;
+using DarkSkyWPF.Services.DarkSky.JSONModels;
 using DarkSkyWPF.Validation;
 using Newtonsoft.Json;
 using System;
@@ -7,7 +8,7 @@ using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DarkSkyWPF.Services
+namespace DarkSkyWPF.Services.DarkSky
 {
   /// <summary>
   /// The DarkSkyService implementation is responsible for handling service calls and wrapping the raw data coming from the DarkSky API
@@ -23,9 +24,9 @@ namespace DarkSkyWPF.Services
       _darkSkyForecastBaseUrl = new Uri(ConfigurationManager.AppSettings.Get("darkSkyForecastBaseUrl"));
     }
 
-    public async Task<WeatherDataRoot> GetWeatherDataForCity(City city, ExcludeParameter excludeParameter = ExcludeParameter.AllExceptDailyAndCurrently)
+    public async Task<WeatherDataRoot> GetWeatherDataForCity(City city, ExcludeParameter excludeParameter = ExcludeParameter.AllExceptDailyAndCurrently, MetricSystem metricSystem = MetricSystem.AUTO)
     {
-      string relativeUrlWithQueryParams = BuildRelativeCityUrl(city, excludeParameter);
+      string relativeUrlWithQueryParams = BuildRelativeCityUrl(city, excludeParameter, metricSystem);
 
       string rawWeatherData = await _weatherDataRetriever.FetchWeatherData(new Uri(_darkSkyForecastBaseUrl, relativeUrlWithQueryParams));
 
@@ -35,13 +36,13 @@ namespace DarkSkyWPF.Services
       return weatherDataForCity;
     }
 
-    public async Task<IEnumerable<WeatherDataRoot>> GetWeatherDataForMultipleCities(IEnumerable<City> cities, ExcludeParameter excludeParameter = ExcludeParameter.AllExceptDailyAndCurrently)
+    public async Task<IEnumerable<WeatherDataRoot>> GetWeatherDataForMultipleCities(IEnumerable<City> cities, ExcludeParameter excludeParameter = ExcludeParameter.AllExceptDailyAndCurrently, MetricSystem metricSystem = MetricSystem.AUTO)
     {
       IList<WeatherDataRoot> weatherDataList = new List<WeatherDataRoot>();
 
       foreach (City city in cities)
       {
-        string relativeUrlWithQueryParams = BuildRelativeCityUrl(city, excludeParameter);
+        string relativeUrlWithQueryParams = BuildRelativeCityUrl(city, excludeParameter, metricSystem);
         string rawWeatherData = await _weatherDataRetriever.FetchWeatherData(new Uri(_darkSkyForecastBaseUrl, relativeUrlWithQueryParams));
 
         WeatherDataRoot weatherDataForCity = ParseWeatherDataFromStringResult(rawWeatherData);
@@ -56,11 +57,12 @@ namespace DarkSkyWPF.Services
       return JsonConvert.DeserializeObject<WeatherDataRoot>(rawWeatherData);
     }
 
-    private string BuildRelativeCityUrl(City city, ExcludeParameter excludeParameter)
+    private string BuildRelativeCityUrl(City city, ExcludeParameter excludeParameter, MetricSystem metricSystem)
     {
       string relativeUrlForCityWithoutQueryParams = city.Latitude + "," + city.Longitude;
       string excludeQueryParameter = MapExcludeToQueryParameter(excludeParameter);
-      return relativeUrlForCityWithoutQueryParams + excludeQueryParameter;
+      string metricQueryParametere = MapMetricSystemToQueryParameter(metricSystem);
+      return relativeUrlForCityWithoutQueryParams + "?" + excludeQueryParameter + "&" + metricQueryParametere;
     }
 
     private string MapExcludeToQueryParameter(ExcludeParameter excludeParameter)
@@ -69,30 +71,35 @@ namespace DarkSkyWPF.Services
       {
         case ExcludeParameter.None:
           return string.Empty;
-        case ExcludeParameter.Currently:
-          return "?exclude=currently";
         case ExcludeParameter.Minutely:
-          return "?exclude=minutely";
+          return "exclude=minutely";
         case ExcludeParameter.Hourly:
-          return "?exclude=hourly";
-        case ExcludeParameter.Daily:
-          return "?exclude=daily";
+          return "exclude=hourly";
         case ExcludeParameter.Alerts:
-          return "?exclude=alerts";
+          return "exclude=alerts";
         case ExcludeParameter.Flags:
-          return "?exclude=flags";
-        case ExcludeParameter.CurrentlyAndMinutely:
-          return "?exclude=currently,minutely";
-        case ExcludeParameter.CurrentlyAndHourly:
-          return "?exclude=currently,hourly";
+          return "exclude=flags";;
         case ExcludeParameter.AlertsAndFlags:
-          return "?exclude=alerts,flags";
-        case ExcludeParameter.AllExceptDaily:
-          return "?exclude=currently,minutely,hourly,alerts,flags";
+          return "exclude=alerts,flags";
         case ExcludeParameter.AllExceptDailyAndCurrently:
-          return "?exclude=minutely,hourly,alerts,flags";
+          return "exclude=minutely,hourly,alerts,flags";
         default:
           return string.Empty;
+      }
+    }
+
+    private string MapMetricSystemToQueryParameter(MetricSystem metricSystem)
+    {
+      switch (metricSystem)
+      {
+        case MetricSystem.AUTO:
+          return "units=auto";
+        case MetricSystem.SI:
+          return "units=si";
+        case MetricSystem.US:
+          return "units=us";
+        default:
+          return "units=auto";
       }
     }
   }

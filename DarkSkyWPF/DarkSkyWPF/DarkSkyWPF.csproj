@@ -59,6 +59,7 @@
       <HintPath>..\packages\System.Configuration.ConfigurationManager.4.4.1\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -101,21 +102,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Services\City.cs" />
-    <Compile Include="Services\CityService.cs" />
-    <Compile Include="Services\DarkSkyService.cs" />
-    <Compile Include="Services\ExcludeParameter.cs" />
-    <Compile Include="Services\ICityService.cs" />
-    <Compile Include="Services\IWeatherDataRetriever.cs" />
-    <Compile Include="Services\JSONModels\RequestMetaData.cs" />
-    <Compile Include="Services\JSONModels\WeatherAlert.cs" />
-    <Compile Include="Services\JSONModels\WeatherDataRoot.cs" />
-    <Compile Include="Services\JSONModels\WeatherDetails.cs" />
-    <Compile Include="Services\WeatherDataRetriever.cs" />
+    <Compile Include="Converters\UNIXTimeToDateConverter.cs" />
+    <Compile Include="Services\Cities\City.cs" />
+    <Compile Include="Services\Cities\CityService.cs" />
+    <Compile Include="Services\DarkSky\DarkSkyService.cs" />
+    <Compile Include="Services\DarkSky\ExcludeParameter.cs" />
+    <Compile Include="Services\Cities\ICityService.cs" />
+    <Compile Include="Services\DarkSky\JSONModels\IconValue.cs" />
+    <Compile Include="Services\DarkSky\IWeatherDataRetriever.cs" />
+    <Compile Include="Services\DarkSky\JSONModels\RequestMetaData.cs" />
+    <Compile Include="Services\DarkSky\JSONModels\WeatherAlert.cs" />
+    <Compile Include="Services\DarkSky\JSONModels\WeatherDataRoot.cs" />
+    <Compile Include="Services\DarkSky\JSONModels\WeatherDetails.cs" />
+    <Compile Include="Services\DarkSky\MetricSystem.cs" />
+    <Compile Include="Services\DarkSky\WeatherDataRetriever.cs" />
     <Compile Include="Startup\DependencyConfiguration.cs" />
     <Compile Include="Validation\ArgumentValidation.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="WeatherViewModel.cs" />
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -124,7 +127,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Services\IDarkSkyService.cs" />
+    <Compile Include="Services\DarkSky\IDarkSkyService.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -147,6 +150,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -156,6 +160,51 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\CLEARDAY.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\CLEARNIGHT.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\CLOUDY.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\FOG.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\HAIL.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Images\NONE.png" />
+    <Content Include="Images\PARTLYCLOUDYDAY.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\PARTLYCLOUDYNIGHT.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\RAIN.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\SLEET.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\SNOW.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\thankYouClimacons.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\THUNDERSTORM.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\TORNADO.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\WIND.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

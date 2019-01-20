@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace DarkSkyWPF.Services
+namespace DarkSkyWPF.Services.DarkSky
 {
   /// <summary>
   /// Fetches raw data async from the Dark Sky API.
