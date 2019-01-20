@@ -1,4 +1,4 @@
-﻿namespace DarkSkyWPF.DarkSky
+﻿namespace DarkSkyWPF.Services
 {
   /// <summary>
   /// Model class for City objects. A new DarkSky Forecast Request can be created via the city's Latitude and Longitude properties.

@@ -1,8 +1,8 @@
-﻿using DarkSkyWPF.DarkSky.JSONModels;
+﻿using DarkSkyWPF.Services.JSONModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DarkSkyWPF.DarkSky
+namespace DarkSkyWPF.Services
 {
   /// <summary>
   /// IDarkSkyService is responsible for handling service calls and wrapping the raw data coming from the DarkSky API.

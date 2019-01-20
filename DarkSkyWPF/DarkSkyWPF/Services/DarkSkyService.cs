@@ -1,4 +1,4 @@
-﻿using DarkSkyWPF.DarkSky.JSONModels;
+﻿using DarkSkyWPF.Services.JSONModels;
 using DarkSkyWPF.Validation;
 using Newtonsoft.Json;
 using System;
@@ -7,10 +7,10 @@ using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DarkSkyWPF.DarkSky
+namespace DarkSkyWPF.Services
 {
   /// <summary>
-  /// IDarkSkyService is responsible for handling service calls and wrapping the raw data coming from the DarkSky API
+  /// The DarkSkyService implementation is responsible for handling service calls and wrapping the raw data coming from the DarkSky API
   /// </summary>
   public class DarkSkyService : IDarkSkyService
   {
@@ -29,7 +29,10 @@ namespace DarkSkyWPF.DarkSky
 
       string rawWeatherData = await _weatherDataRetriever.FetchWeatherData(new Uri(_darkSkyForecastBaseUrl, relativeUrlWithQueryParams));
 
-      return ParseWeatherDataFromStringResult(rawWeatherData);
+      WeatherDataRoot weatherDataForCity = ParseWeatherDataFromStringResult(rawWeatherData);
+      weatherDataForCity.CityName = city.Name;
+
+      return weatherDataForCity;
     }
 
     public async Task<IEnumerable<WeatherDataRoot>> GetWeatherDataForMultipleCities(IEnumerable<City> cities, ExcludeParameter excludeParameter = ExcludeParameter.AllExceptDailyAndCurrently)
@@ -40,17 +43,17 @@ namespace DarkSkyWPF.DarkSky
       {
         string relativeUrlWithQueryParams = BuildRelativeCityUrl(city, excludeParameter);
         string rawWeatherData = await _weatherDataRetriever.FetchWeatherData(new Uri(_darkSkyForecastBaseUrl, relativeUrlWithQueryParams));
-        //todo: modify collection and store city names or modify json to already have city name in the data
-        weatherDataList.Add(ParseWeatherDataFromStringResult(rawWeatherData));
+
+        WeatherDataRoot weatherDataForCity = ParseWeatherDataFromStringResult(rawWeatherData);
+        weatherDataForCity.CityName = city.Name;
+        weatherDataList.Add(weatherDataForCity);
       }
       return weatherDataList.ToArray();
     }
 
     private WeatherDataRoot ParseWeatherDataFromStringResult(string rawWeatherData)
     {
-      //only separate line for breakpoint
-      WeatherDataRoot weatherData = JsonConvert.DeserializeObject<WeatherDataRoot>(rawWeatherData);
-      return weatherData;
+      return JsonConvert.DeserializeObject<WeatherDataRoot>(rawWeatherData);
     }
 
     private string BuildRelativeCityUrl(City city, ExcludeParameter excludeParameter)

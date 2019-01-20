@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DarkSkyWPF.DarkSky.JSONModels
+namespace DarkSkyWPF.Services.JSONModels
 {
   /// <summary>
   /// JSON Model helper class to be able to store the different Forecast Request's data points' detailed data. Each MultipleDataPointsWeatherCondition (minutely, hourly and daily) section contains multiple pieces of WeatherDetails inside their [data] section.
@@ -12,78 +12,78 @@ namespace DarkSkyWPF.DarkSky.JSONModels
     /// The apparent (or “feels like”) temperature in degrees Fahrenheit. Optional, only on hourly.
     /// </summary>
     [JsonProperty("apparentTemperature")]
-    public double ApparentTemperature { get; set; }
+    public double ApparentTemperature { get; private set; }
 
     /// <summary>
     /// The daytime high apparent temperature. Optional, only on daily.
     /// </summary>
     [JsonProperty("apparentTemperatureHigh")]
-    public double ApparentTemperatureHighest { get; set; }
+    public double ApparentTemperatureHighest { get; private set; }
 
     /// <summary>
     /// The overnight low apparent temperature. Optional, only on daily.
     /// </summary>
     [JsonProperty("apparentTemperatureLow")]
-    public double ApparentTemperatureLowest { get; set; }
+    public double ApparentTemperatureLowest { get; private set; }
 
     /// <summary>
     /// The sea-level air pressure in millibars.
     /// </summary>
     [JsonProperty("pressure")]
-    public double AtmosphericPressure { get; set; }
+    public double AtmosphericPressure { get; private set; }
 
     /// <summary>
     /// The machine-readable icon suggestion for a data section entity (an hour, minute or day).
     /// </summary>
     [JsonProperty("icon")]
-    public string Icon { get; set; }
+    public string Icon { get; private set; }
 
     /// <summary>
     /// The relative humidity, between 0 and 1, inclusive.
     /// </summary>
     [JsonProperty("humidity")]
-    public double Humidity { get; set; }
+    public double Humidity { get; private set; }
 
     /// <summary>
     /// The human-readable summary for a data section entity (an hour, minute or day).
     /// </summary>
     [JsonProperty("summary")]
-    public string Summary { get; set; }
+    public string Summary { get; private set; }
 
     /// <summary>
     /// The air temperature in degrees Fahrenheit. Optional, only on hourly.
     /// </summary>
     [JsonProperty("temperature")]
-    public double Temperature { get; set; }
+    public double Temperature { get; private set; }
 
     /// <summary>
     /// The daytime high temperature. Only on daily.
     /// </summary>
     [JsonProperty("temperatureHigh")]
-    public double TemperatureHighest { get; set; }
+    public double TemperatureHighest { get; private set; }
 
     /// <summary>
     /// The overnight low temperature. Only on daily.
     /// </summary>
     [JsonProperty("temperatureLow")]
-    public double TemperatureLowest { get; set; }
+    public double TemperatureLowest { get; private set; }
 
     /// <summary>
     /// The UNIX time at which this data point begins.
     /// </summary>
     [JsonProperty("time")]
-    public long UNIXTime { get; set; }
+    public long UNIXTime { get; private set; }
 
     /// <summary>
     /// The UV index.
     /// </summary>
     [JsonProperty("uvIndex")]
-    public double UVIndex { get; set; }
+    public double UVIndex { get; private set; }
 
     /// <summary>
     /// The wind speed in miles per hour.
     /// </summary>
     [JsonProperty("windSpeed")]
-    public double WindSpeed { get; set; }
+    public double WindSpeed { get; private set; }
   }
 }

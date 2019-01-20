@@ -1,4 +1,4 @@
-﻿namespace DarkSkyWPF.DarkSky
+﻿namespace DarkSkyWPF.Services
 {
   /// <summary>
   /// The DarkSky API Forecast Request can be added an optional exclude query parameter to specifically not receive all sections from the API.
