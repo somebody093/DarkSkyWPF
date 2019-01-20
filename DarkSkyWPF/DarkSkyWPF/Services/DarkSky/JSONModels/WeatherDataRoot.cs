@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace DarkSkyWPF.DarkSky.JSONModels
+namespace DarkSkyWPF.Services.DarkSky.JSONModels
 {
   /// <summary>
   /// The DarkSky API's Forecast Request's response parser root object.
@@ -9,40 +9,46 @@ namespace DarkSkyWPF.DarkSky.JSONModels
   public class WeatherDataRoot
   {
     /// <summary>
+    /// City name appended after parsing based-on the city model object that was used for the request.
+    /// </summary>
+    [JsonIgnore]
+    public string CityName { get; set; }
+
+    /// <summary>
     /// Stores custom information regarding the current weather conditions at the requested location.
     /// </summary>
     [JsonProperty("currently")]
-    public SingleDataPointWeatherCondition CurrentWeather { get; set; }
+    public SingleDataPointWeatherCondition CurrentWeather { get; private set; }
 
     /// <summary>
     /// Stores custom information regarding the minute-by-minute weather conditions for the next hour at the requested location.
     /// </summary>
     [JsonProperty("minutely")]
-    public MultipleDataPointsWeatherCondition MinutelyWeather { get; set; }
+    public MultipleDataPointsWeatherCondition MinutelyWeather { get; private set; }
 
     /// <summary>
     /// Stores custom information regarding the hour-by-hour weather conditions for the next two days at the requested location.
     /// </summary>
     [JsonProperty("hourly")]
-    public MultipleDataPointsWeatherCondition HourlyWeather { get; set; }
+    public MultipleDataPointsWeatherCondition HourlyWeather { get; private set; }
 
     /// <summary>
     /// Stores custom information regarding the day-by-day weather conditions for the next week at the requested location.
     /// </summary>
     [JsonProperty("daily")]
-    public MultipleDataPointsWeatherCondition DailyWeather { get; set; }
+    public MultipleDataPointsWeatherCondition DailyWeather { get; private set; }
 
     /// <summary>
     /// Stores severe weather alert information for the requested location.
     /// </summary>
     [JsonProperty("alerts")]
-    public WeatherAlert WeatherAlert { get; set; }
+    public WeatherAlert WeatherAlert { get; private set; }
 
     /// <summary>
     /// Stores miscellaneous metadata about the DarkSky API request.
     /// </summary>
     [JsonProperty("flags")]
-    public RequestMetaData WeatherRequestMetaData { get; set; }
+    public RequestMetaData WeatherRequestMetaData { get; private set; }
   }
 
   /// <summary>
@@ -50,11 +56,30 @@ namespace DarkSkyWPF.DarkSky.JSONModels
   /// </summary>
   public class WeatherCondition
   {
+    private string _imageSource;
+
     [JsonProperty("summary")]
-    public string Summary { get; set; }
+    public string Summary { get; private set; }
 
     [JsonProperty("icon")]
-    public string Icon { get; set; }
+    public IconValue Icon { get; private set; }
+
+    /// <summary>
+    /// Used to be able to locate the replacement of the Icon string; an actual image resource for the ui
+    /// </summary>
+    [JsonIgnore]
+    public string ImageSource
+    {
+      get
+      {
+        if (_imageSource == null)
+        {
+          _imageSource = @"\Images\" + System.Enum.GetName(typeof(IconValue), Icon) + ".png";
+          return _imageSource;
+        }
+        return _imageSource;
+      }
+    }
   }
 
   /// <summary>
@@ -63,25 +88,25 @@ namespace DarkSkyWPF.DarkSky.JSONModels
   public class SingleDataPointWeatherCondition : WeatherCondition
   {
     [JsonProperty("apparentTemperature")]
-    public double ApparentTemperature { get; set; }
+    public double ApparentTemperature { get; private set; }
 
     [JsonProperty("temperature")]
-    public double Temperature { get; set; }    
+    public double Temperature { get; private set; }    
 
     [JsonProperty("humidity")]
-    public double Humidity { get; set; }
+    public double Humidity { get; private set; }
 
     [JsonProperty("pressure")]
-    public double AtmosphericPressure { get; set; }
+    public double AtmosphericPressure { get; private set; }
 
     [JsonProperty("time")]
-    public long UNIXTime { get; set; }
+    public double UNIXTime { get; private set; }
 
     [JsonProperty("uvIndex")]
-    public double UVIndex { get; set; }
+    public double UVIndex { get; private set; }
 
     [JsonProperty("windSpeed")]
-    public double WindSpeed { get; set; }
+    public double WindSpeed { get; private set; }
   }
 
   /// <summary>
@@ -91,6 +116,6 @@ namespace DarkSkyWPF.DarkSky.JSONModels
   public class MultipleDataPointsWeatherCondition : WeatherCondition
   {
     [JsonProperty("data")]
-    public IEnumerable<WeatherDetails> WeatherDetails { get; set; }
+    public IEnumerable<WeatherDetails> WeatherDetails { get; private set; }
   }
 }

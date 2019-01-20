@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DarkSkyWPF.DarkSky.JSONModels
+namespace DarkSkyWPF.Services.DarkSky.JSONModels
 {
   /// <summary>
   /// JSON Model helper class to be able to parse miscellaneous metadata about the DarkSky API request.
@@ -8,6 +8,6 @@ namespace DarkSkyWPF.DarkSky.JSONModels
   public class RequestMetaData
   {
     [JsonProperty("units")]
-    public string UnitsType { get; set; }
+    public string UnitsType { get; private set; }
   }
 }

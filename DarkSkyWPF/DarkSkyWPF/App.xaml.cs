@@ -1,12 +1,7 @@
-﻿using DarkSkyWPF.DarkSky;
-using DarkSkyWPF.DarkSky.JSONModels;
+﻿using DarkSkyWPF.Services.Cities;
+using DarkSkyWPF.Services.DarkSky;
 using DarkSkyWPF.Startup;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+using DarkSkyWPF.ViewModels;
 using System.Windows;
 using Unity;
 
@@ -23,10 +18,11 @@ namespace DarkSkyWPF
 
       IUnityContainer container = DependencyConfiguration.BuildUnityContainer();
 
-      //for testing before building a UI
-      IDarkSkyService darkSkyServiceForTest = container.Resolve<DarkSkyService>();
-      City budapest = new City() { Name = "Budapest", Latitude = "47.4984", Longitude = "19.0405"};
-      WeatherDataRoot weatherData = await darkSkyServiceForTest.GetWeatherDataForCity(budapest);
+      IDarkSkyService darkSkyService = container.Resolve<DarkSkyService>();
+      ICityService cityService = container.Resolve<CityService>();
+      MainWindow mainWindow = new MainWindow(new MainWindowViewModel(darkSkyService, cityService));
+
+      mainWindow.Show();
     }
   }
 }
