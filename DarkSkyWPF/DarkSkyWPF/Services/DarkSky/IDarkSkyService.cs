@@ -15,6 +15,7 @@ namespace DarkSkyWPF.Services.DarkSky
     /// </summary>
     /// <param name="city">The city the weather request is queried for.</param>
     /// <param name="excludeParameter">By specifying an Exclude Parameter it is possible to not request all weather sections for the given location.</param>
+    /// <param name="metricSystem">tba</param>
     /// <returns>An WeatherDataRoot object with the requested data.</returns>
     Task<WeatherDataRoot> GetWeatherDataForCity(City city, ExcludeParameter excludeParameter = ExcludeParameter.AllExceptDailyAndCurrently, MetricSystem metricSystem = MetricSystem.AUTO);
 
@@ -23,6 +24,7 @@ namespace DarkSkyWPF.Services.DarkSky
     /// </summary>
     /// <param name="cities">The list of cities the weather request is queried for.</param>
     /// <param name="excludeParameter">By specifying an Exclude Parameter it is possible to not request all weather sections for the given location.</param>
+    /// <param name="metricSystem">tba</param>
     /// <returns>An IEnumerable<WeatherDataRoot> object with the requested data.</returns>
     Task<IEnumerable<WeatherDataRoot>> GetWeatherDataForMultipleCities(IEnumerable<City> cities, ExcludeParameter excludeParameter = ExcludeParameter.AllExceptDailyAndCurrently, MetricSystem metricSystem = MetricSystem.AUTO);
   }

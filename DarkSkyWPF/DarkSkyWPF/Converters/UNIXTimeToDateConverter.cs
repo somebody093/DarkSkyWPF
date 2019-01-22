@@ -18,7 +18,7 @@ namespace DarkSkyWPF.Converters
         DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0);
         return dateTime.AddSeconds(timeStamp);
       }
-      return "CONVERSION ERROR";
+      return Properties.Resources.UNIXTimeToDateConvertErrorMessage;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -118,30 +118,30 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="MainWindowChangeLanguageTextBlock" xml:space="preserve">
-    <value>Change language:</value>
+    <value>Nyelvválasztás:</value>
   </data>
   <data name="MainWindowCurrentWeatherHeaderTextBlock" xml:space="preserve">
-    <value>Current weather:</value>
+    <value>A jelenlegi időjárás:</value>
   </data>
   <data name="MainWindowFeelsLikeTextBlock" xml:space="preserve">
-    <value>Feels-like:</value>
+    <value>Hőérzet:</value>
   </data>
   <data name="MainWindowHumidityTextBlock" xml:space="preserve">
-    <value>Humidity:</value>
+    <value>Páratartalom:</value>
   </data>
   <data name="MainWindowNextWeekHeaderTextBlock" xml:space="preserve">
-    <value>This week's weather:</value>
+    <value>A heti időjárás:</value>
   </data>
   <data name="MainWindowTemperatureTextBlock" xml:space="preserve">
-    <value>Temperature:</value>
+    <value>Hőmérséklet:</value>
   </data>
   <data name="MainWindowUVTextBlock" xml:space="preserve">
     <value>UV index:</value>
   </data>
   <data name="MainWindowWindSpeedTextBlock" xml:space="preserve">
-    <value>Wind speed:</value>
+    <value>Szélerősség:</value>
   </data>
   <data name="UNIXTimeToDateConvertErrorMessage" xml:space="preserve">
-    <value>CONVERSION ERROR</value>
+    <value>HIBÁS KONVERZIÓ</value>
   </data>
 </root>
