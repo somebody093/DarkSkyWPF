@@ -10,6 +10,9 @@ namespace DarkSkyWPF.Services.DarkSky.JSONModels
   /// </summary>
   public class WeatherDetails
   {
+    private const string ImageRelativePath = @"\Images\";
+    private const string FileNameEnding = ".png";
+
     private double? _apparentTemperatureCalculated;
     private double? _temperatureCalculated;
     private string _imageSource;
@@ -24,13 +27,13 @@ namespace DarkSkyWPF.Services.DarkSky.JSONModels
     /// The daytime high apparent temperature. Optional, only on daily.
     /// </summary>
     [JsonProperty("apparentTemperatureHigh")]
-    public double ApparentTemperatureHighest { get; private set; }
+    public double? ApparentTemperatureHighest { get; private set; }
 
     /// <summary>
     /// The overnight low apparent temperature. Optional, only on daily.
     /// </summary>
     [JsonProperty("apparentTemperatureLow")]
-    public double ApparentTemperatureLowest { get; private set; }
+    public double? ApparentTemperatureLowest { get; private set; }
 
     /// <summary>
     /// Simple average ApparentTemperature due to the missing original property on daily objects
@@ -80,7 +83,15 @@ namespace DarkSkyWPF.Services.DarkSky.JSONModels
       {
         if (_imageSource == null)
         {
-          _imageSource = @"\Images\" + System.Enum.GetName(typeof(IconValue), Icon) + ".png";
+          try
+          {
+            _imageSource = ImageRelativePath + System.Enum.GetName(typeof(IconValue), Icon) + FileNameEnding;
+          }
+          catch (System.ArgumentNullException)
+          {
+            //logging
+          }
+
           return _imageSource;
         }
         return _imageSource;

@@ -6,8 +6,13 @@
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:mvvmlight="http://www.galasoft.ch/mvvmlight"
         xmlns:converters="clr-namespace:DarkSkyWPF.Converters"
+        xmlns:lex="http://wpflocalizeextension.codeplex.com"
+        lex:LocalizeDictionary.DesignCulture="en"
+        lex:LocalizeDictionary.IncludeInvariantCulture="false"
+        lex:ResxLocalizationProvider.DefaultAssembly="DarkSkyWPF"
+        lex:ResxLocalizationProvider.DefaultDictionary="Resources"
         mc:Ignorable="d"
-        Title="Seven's Weather" Height="450" Width="800" FontSize="16" FontFamily="Georgia">
+        Title="Seven's Weather" Height="450" Width="800" MinWidth="600" MinHeight="600" FontSize="16" FontFamily="Georgia">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <mvvmlight:EventToCommand Command="{Binding LoadDataCommand}" />
@@ -27,30 +32,29 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Path=Summary}"></TextBlock>
-                <TextBlock Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Text="{Binding Path=UNIXTime, Converter={StaticResource UNIXTimeToDateConverter}, StringFormat={}D}"></TextBlock>
+                <TextBlock Grid.Row="0" Grid.ColumnSpan="3" HorizontalAlignment="Left" Text="{Binding Path=UNIXTime,  Converter={StaticResource UNIXTimeToDateConverter}, ConverterCulture={x:Static lex:LocalizeDictionary.CurrentCulture}, StringFormat={}D}"></TextBlock>
                 <Image Grid.Row="1" Grid.Column="0" Margin="20" VerticalAlignment="Top" Stretch="None" Source="{Binding Path=ImageSource}"></Image>
                 <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="3" VerticalAlignment="Center">Temperature:</TextBlock>
+                        <TextBlock Margin="3" VerticalAlignment="Center" Text="{lex:Loc Key=MainWindowTemperatureTextBlock}" />
                         <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=TemperatureCalculated, StringFormat={}{0:0.##}°C}"></TextBlock>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="3" VerticalAlignment="Center">Feels-like:</TextBlock>
+                        <TextBlock Margin="3" VerticalAlignment="Center" Text="{lex:Loc Key=MainWindowFeelsLikeTextBlock}" />
                         <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=ApparentTemperatureCalculated, StringFormat={}{0:0.##}°C}"></TextBlock>
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Vertical">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="3" VerticalAlignment="Center">Humidity:</TextBlock>
+                        <TextBlock Margin="3" VerticalAlignment="Center" Text="{lex:Loc Key=MainWindowHumidityTextBlock}" />
                         <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=Humidity, StringFormat={}{0:P0}}"></TextBlock>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="3" VerticalAlignment="Center">UVIndex:</TextBlock>
+                        <TextBlock Margin="3" VerticalAlignment="Center" Text="{lex:Loc Key=MainWindowUVTextBlock}" />
                         <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=UVIndex}"></TextBlock>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="3" VerticalAlignment="Center">WindSpeed:</TextBlock>
+                        <TextBlock Margin="3" VerticalAlignment="Center" Text="{lex:Loc Key=MainWindowWindSpeedTextBlock}" />
                         <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=WindSpeed, StringFormat={}{0} m/s}"></TextBlock>
                     </StackPanel>
                 </StackPanel>
@@ -58,62 +62,68 @@
         </DataTemplate>
     </Window.Resources>
 
-    <TabControl Background="AliceBlue" ItemsSource="{Binding AvailableWeatherInfo}">
-        <TabControl.ItemTemplate>
-            <DataTemplate>
-                <TextBlock Text="{Binding CityName}" />
-            </DataTemplate>
-        </TabControl.ItemTemplate>
-        <TabControl.ContentTemplate>
-            <DataTemplate>
-                <DockPanel LastChildFill="True">
-                    <Grid Background="LightSkyBlue" DockPanel.Dock="Top" Margin="5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="4*" />
-                            <ColumnDefinition Width="4*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="2*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Grid.ColumnSpan="3" FontSize="18" Text="Current weather conditions:"></TextBlock>
-                        <TextBlock Grid.Row="1" Grid.ColumnSpan="3" FontSize="18" Text="{Binding Path=CurrentWeather.Summary}"></TextBlock>
-                        <Image Grid.Row="2" Grid.Column="0" Margin="0" VerticalAlignment="Top" Stretch="None" Source="{Binding Path=CurrentWeather.ImageSource}"></Image>
-                        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Vertical">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="3" VerticalAlignment="Center">Temperature:</TextBlock>
-                                <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=CurrentWeather.Temperature, StringFormat={}{0:0.##}°C}"></TextBlock>
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+            <ComboBox DockPanel.Dock="Right" Margin="10,3,10,3" ItemsSource="{Binding Source={x:Static lex:LocalizeDictionary.Instance}, Path=MergedAvailableCultures}"
+                      SelectedItem="{Binding Source={x:Static lex:LocalizeDictionary.Instance}, Path=Culture}" 
+                      DisplayMemberPath="NativeName" MinWidth="250" SelectedIndex="0" />
+            <TextBlock DockPanel.Dock="Right"  VerticalAlignment="Center" Text="{lex:Loc Key=MainWindowChangeLanguageTextBlock}" />
+        </DockPanel>
+        <TabControl Background="AliceBlue" ItemsSource="{Binding AvailableWeatherInfo}">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding CityName}" />
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <DockPanel LastChildFill="True">
+                        <Grid Background="LightSkyBlue" DockPanel.Dock="Top" Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="4*" />
+                                <ColumnDefinition Width="4*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="2*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.ColumnSpan="3" FontSize="18" Text="{lex:Loc Key=MainWindowTemperatureTextBlock}" />
+                            <Image Grid.Row="1" Grid.Column="0" Margin="0" VerticalAlignment="Top" Stretch="None" Source="{Binding Path=CurrentWeather.ImageSource}"></Image>
+                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Margin="3" VerticalAlignment="Center" Text="{lex:Loc Key=MainWindowTemperatureTextBlock}" />
+                                    <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=CurrentWeather.Temperature, StringFormat={}{0:0.##}°C}"></TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Margin="3" VerticalAlignment="Center" Text="{lex:Loc Key=MainWindowFeelsLikeTextBlock}" />
+                                    <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=CurrentWeather.ApparentTemperature, StringFormat={}{0:0.##}°C}"></TextBlock>
+                                </StackPanel>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="3" VerticalAlignment="Center">Feels-like:</TextBlock>
-                                <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=CurrentWeather.ApparentTemperature, StringFormat={}{0:0.##}°C}"></TextBlock>
+                            <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Margin="3" VerticalAlignment="Center" Text="{lex:Loc Key=MainWindowHumidityTextBlock}" />
+                                    <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=CurrentWeather.Humidity,StringFormat={}{0:P0}}"></TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Margin="3" VerticalAlignment="Center" Text="{lex:Loc Key=MainWindowUVTextBlock}" />
+                                    <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=CurrentWeather.UVIndex}"></TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Margin="3" VerticalAlignment="Center" Text="{lex:Loc Key=MainWindowWindSpeedTextBlock}" />
+                                    <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=CurrentWeather.WindSpeed, StringFormat={}{0} m/s}"></TextBlock>
+                                </StackPanel>
                             </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Vertical">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="3" VerticalAlignment="Center">Humidity:</TextBlock>
-                                <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=CurrentWeather.Humidity,StringFormat={}{0:P0}}"></TextBlock>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="3" VerticalAlignment="Center">UVIndex:</TextBlock>
-                                <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=CurrentWeather.UVIndex}"></TextBlock>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="3" VerticalAlignment="Center">WindSpeed:</TextBlock>
-                                <TextBlock Margin="3" VerticalAlignment="Center" Text="{Binding Path=CurrentWeather.WindSpeed, StringFormat={}{0} m/s}"></TextBlock>
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                    <DockPanel>
-                        <TextBlock DockPanel.Dock="Top" Grid.Row="0" Grid.ColumnSpan="3" FontSize="18" Text="Next week's weather:"></TextBlock>
-                        <ScrollViewer DockPanel.Dock="Bottom" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                            <ItemsControl ItemsSource="{Binding DailyWeather.WeatherDetails}" ItemTemplate="{StaticResource dailyWeatherTemplate}" />
-                        </ScrollViewer>
+                        </Grid>
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" Grid.Row="0" Grid.ColumnSpan="3" FontSize="18" Text="{lex:Loc Key=MainWindowNextWeekHeaderTextBlock}" />
+                            <ScrollViewer DockPanel.Dock="Bottom" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                <ItemsControl ItemsSource="{Binding DailyWeather.WeatherDetails}" ItemTemplate="{StaticResource dailyWeatherTemplate}" />
+                            </ScrollViewer>
+                        </DockPanel>
                     </DockPanel>
-                </DockPanel>
-            </DataTemplate>
-        </TabControl.ContentTemplate>
-    </TabControl>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
+    </DockPanel>
 </Window>

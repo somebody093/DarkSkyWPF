@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System.Collections.Generic;
 
 namespace DarkSkyWPF.Services.DarkSky.JSONModels
 {
@@ -49,73 +48,5 @@ namespace DarkSkyWPF.Services.DarkSky.JSONModels
     /// </summary>
     [JsonProperty("flags")]
     public RequestMetaData WeatherRequestMetaData { get; private set; }
-  }
-
-  /// <summary>
-  /// JSON Model helper parent class. All weather-specific response sections (currently, minutely, hourly, daily) contain a general summary information and a summary weather icon for the concerned period.
-  /// </summary>
-  public class WeatherCondition
-  {
-    private string _imageSource;
-
-    [JsonProperty("summary")]
-    public string Summary { get; private set; }
-
-    [JsonProperty("icon")]
-    public IconValue Icon { get; private set; }
-
-    /// <summary>
-    /// Used to be able to locate the replacement of the Icon string; an actual image resource for the ui
-    /// </summary>
-    [JsonIgnore]
-    public string ImageSource
-    {
-      get
-      {
-        if (_imageSource == null)
-        {
-          _imageSource = @"\Images\" + System.Enum.GetName(typeof(IconValue), Icon) + ".png";
-          return _imageSource;
-        }
-        return _imageSource;
-      }
-    }
-  }
-
-  /// <summary>
-  /// JSON Model helper class to be able to parse custom information regarding the current weather conditions at the requested location.
-  /// </summary>
-  public class SingleDataPointWeatherCondition : WeatherCondition
-  {
-    [JsonProperty("apparentTemperature")]
-    public double ApparentTemperature { get; private set; }
-
-    [JsonProperty("temperature")]
-    public double Temperature { get; private set; }    
-
-    [JsonProperty("humidity")]
-    public double Humidity { get; private set; }
-
-    [JsonProperty("pressure")]
-    public double AtmosphericPressure { get; private set; }
-
-    [JsonProperty("time")]
-    public double UNIXTime { get; private set; }
-
-    [JsonProperty("uvIndex")]
-    public double UVIndex { get; private set; }
-
-    [JsonProperty("windSpeed")]
-    public double WindSpeed { get; private set; }
-  }
-
-  /// <summary>
-  /// JSON Model helper parent class to be able to parse custom information regarding minutely, hourly or daily weather conditions for the requested location.
-  /// <para>Minutely, hourly and daily sections each have a data section containing multiple pieces of individual information (e.g. for each hour or day).</para>
-  /// </summary>
-  public class MultipleDataPointsWeatherCondition : WeatherCondition
-  {
-    [JsonProperty("data")]
-    public IEnumerable<WeatherDetails> WeatherDetails { get; private set; }
-  }
+  }  
 }
