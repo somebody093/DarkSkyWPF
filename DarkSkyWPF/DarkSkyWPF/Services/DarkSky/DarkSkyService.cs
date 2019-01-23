@@ -1,11 +1,11 @@
-﻿using DarkSkyWPF.Services.Cities;
+﻿using DarkSkyWPF.Configuration;
+using DarkSkyWPF.Services.Cities;
 using DarkSkyWPF.Services.DarkSky.JSONModels;
 using DarkSkyWPF.Validation;
 using log4net;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -19,13 +19,15 @@ namespace DarkSkyWPF.Services.DarkSky
   {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(DarkSkyService));
 
-    private IWeatherDataRetriever _weatherDataRetriever;
+    private readonly IWeatherDataRetriever _weatherDataRetriever;
+    private readonly IDarkSkyConfigurationManager _darkSkyConfigurationManager;
     private readonly Uri _darkSkyForecastBaseUrl;
 
-    public DarkSkyService(IWeatherDataRetriever weatherDataRetriever)
+    public DarkSkyService(IWeatherDataRetriever weatherDataRetriever, IDarkSkyConfigurationManager darkSkyConfigurationManager)
     {
       _weatherDataRetriever = ArgumentValidation.ThrowIfNull(weatherDataRetriever, nameof(weatherDataRetriever));
-      _darkSkyForecastBaseUrl = new Uri(ConfigurationManager.AppSettings.Get("darkSkyForecastBaseUrl"));
+      _darkSkyConfigurationManager = ArgumentValidation.ThrowIfNull(darkSkyConfigurationManager, nameof(darkSkyConfigurationManager));
+      _darkSkyForecastBaseUrl = new Uri(_darkSkyConfigurationManager.GetConfigFromAppSettings("darkSkyForecastBaseUrl"));
     }
 
     public async Task<WeatherDataRoot> GetWeatherDataForCity(City city, ExcludeParameter excludeParameter = ExcludeParameter.AllExceptDailyAndCurrently, MetricSystem metricSystem = MetricSystem.AUTO)
@@ -60,7 +62,7 @@ namespace DarkSkyWPF.Services.DarkSky
       }
       catch (UriFormatException ex)
       {
-        Logger.Error("The DarkSky Forecast Request URL used has invalid format.", ex);
+        Logger.Error("The retrieved DarkSky Forecast Request URL used has invalid format.", ex);
         throw ex;
       }
       catch (HttpRequestException ex)
@@ -84,7 +86,19 @@ namespace DarkSkyWPF.Services.DarkSky
         Logger.Info($"Successful weather data retrieval for {city.Name} from URL: {fullUrl}");
       }
 
-      WeatherDataRoot weatherDataForCity = ParseWeatherDataFromStringResult(rawWeatherData);
+      WeatherDataRoot weatherDataForCity;
+
+      try
+      {
+        weatherDataForCity = ParseWeatherDataFromStringResult(rawWeatherData);
+      }
+      catch (ArgumentNullException ex)
+      {
+        weatherDataForCity = null;
+        Logger.Error("JSON parser had to work on a null raw response.", ex);
+        throw ex;
+      }
+      
       if (weatherDataForCity != null)
       {
         weatherDataForCity.CityName = city.Name;

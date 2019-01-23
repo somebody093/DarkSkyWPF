@@ -1,4 +1,5 @@
-﻿using DarkSkyWPF.Services.Cities;
+﻿using DarkSkyWPF.Configuration;
+using DarkSkyWPF.Services.Cities;
 using DarkSkyWPF.Services.DarkSky;
 using Unity;
 
@@ -11,6 +12,7 @@ namespace DarkSkyWPF.Startup
       IUnityContainer container = new UnityContainer();
 
       container.RegisterType<IWeatherDataRetriever, WeatherDataRetriever>();
+      container.RegisterType<IDarkSkyConfigurationManager, DarkSkyConfigurationManager>();
       container.RegisterSingleton<IDarkSkyService, DarkSkyService>();
       container.RegisterSingleton<ICityService, CityService>();
 
