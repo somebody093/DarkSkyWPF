@@ -120,6 +120,9 @@
   <data name="MainWindowChangeLanguageTextBlock" xml:space="preserve">
     <value>Nyelvválasztás:</value>
   </data>
+  <data name="MainWindowConnectionErrorTextBlock" xml:space="preserve">
+    <value>HIBA AZ IDŐJÁRÁS SZOLGÁLTATÓVAL!</value>
+  </data>
   <data name="MainWindowCurrentWeatherHeaderTextBlock" xml:space="preserve">
     <value>A jelenlegi időjárás:</value>
   </data>

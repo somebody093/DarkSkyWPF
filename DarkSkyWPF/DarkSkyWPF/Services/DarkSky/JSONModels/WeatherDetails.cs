@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using log4net;
+using Newtonsoft.Json;
 using System;
 
 namespace DarkSkyWPF.Services.DarkSky.JSONModels
@@ -10,6 +11,8 @@ namespace DarkSkyWPF.Services.DarkSky.JSONModels
   /// </summary>
   public class WeatherDetails
   {
+    private static readonly ILog Logger = LogManager.GetLogger(typeof(WeatherDetails));
+
     private const string ImageRelativePath = @"\Images\";
     private const string FileNameEnding = ".png";
 
@@ -21,7 +24,7 @@ namespace DarkSkyWPF.Services.DarkSky.JSONModels
     /// The apparent (or “feels like”) temperature in degrees Fahrenheit. Optional, only on hourly.
     /// </summary>
     [JsonProperty("apparentTemperature")]
-    public double ApparentTemperature { get; private set; }
+    public double? ApparentTemperature { get; private set; }
 
     /// <summary>
     /// The daytime high apparent temperature. Optional, only on daily.
@@ -43,21 +46,28 @@ namespace DarkSkyWPF.Services.DarkSky.JSONModels
     {
       get
       {
-        try
+        //no calculation needed, in case available
+        if (ApparentTemperature != null)
         {
-          if (_apparentTemperatureCalculated != null)
-          {
-            return _apparentTemperatureCalculated;
-          }
+          return ApparentTemperature;
+        }
 
-          _apparentTemperatureCalculated = (ApparentTemperatureHighest + ApparentTemperatureLowest) / 2;
+        if (_apparentTemperatureCalculated != null)
+        {
           return _apparentTemperatureCalculated;
         }
-        catch (Exception)
+
+        if (ApparentTemperatureHighest == null || ApparentTemperatureLowest == null)
         {
-          //tba
-          return null;
+          _apparentTemperatureCalculated = null;
+          Logger.Warn("ApparentTemperatureHighest or ApparentTemperatureLowest was not available this time.");
         }
+        else
+        {
+          _apparentTemperatureCalculated = (ApparentTemperatureHighest + ApparentTemperatureLowest) / 2;
+        }
+
+        return _apparentTemperatureCalculated;
       }
     }
 
@@ -65,7 +75,7 @@ namespace DarkSkyWPF.Services.DarkSky.JSONModels
     /// The sea-level air pressure in millibars.
     /// </summary>
     [JsonProperty("pressure")]
-    public double AtmosphericPressure { get; private set; }
+    public double? AtmosphericPressure { get; private set; }
 
     /// <summary>
     /// The machine-readable icon suggestion for a data section entity (an hour, minute or day).
@@ -87,9 +97,10 @@ namespace DarkSkyWPF.Services.DarkSky.JSONModels
           {
             _imageSource = ImageRelativePath + System.Enum.GetName(typeof(IconValue), Icon) + FileNameEnding;
           }
-          catch (System.ArgumentNullException)
+          catch (ArgumentNullException ex)
           {
-            //logging
+            Logger.Error("Image is not available. Icon parsing to IconValue has failed.", ex);
+            _imageSource = null;
           }
 
           return _imageSource;
@@ -102,7 +113,7 @@ namespace DarkSkyWPF.Services.DarkSky.JSONModels
     /// The relative humidity, between 0 and 1, inclusive.
     /// </summary>
     [JsonProperty("humidity")]
-    public double Humidity { get; private set; }
+    public double? Humidity { get; private set; }
 
     /// <summary>
     /// The human-readable summary for a data section entity (an hour, minute or day).
@@ -114,19 +125,19 @@ namespace DarkSkyWPF.Services.DarkSky.JSONModels
     /// The air temperature in degrees Fahrenheit. Optional, only on hourly.
     /// </summary>
     [JsonProperty("temperature")]
-    public double Temperature { get; private set; }
+    public double? Temperature { get; private set; }
 
     /// <summary>
     /// The daytime high temperature. Only on daily.
     /// </summary>
     [JsonProperty("temperatureHigh")]
-    public double TemperatureHighest { get; private set; }
+    public double? TemperatureHighest { get; private set; }
 
     /// <summary>
     /// The overnight low temperature. Only on daily.
     /// </summary>
     [JsonProperty("temperatureLow")]
-    public double TemperatureLowest { get; private set; }
+    public double? TemperatureLowest { get; private set; }
 
     /// <summary>
     /// Simple average Temperature calculated due to the missing original property on daily objects
@@ -136,21 +147,27 @@ namespace DarkSkyWPF.Services.DarkSky.JSONModels
     {
       get
       {
-        try
+        //no calculation needed, in case available
+        if (Temperature != null)
         {
-          if (_temperatureCalculated != null)
-          {
-            return _temperatureCalculated;
-          }
+          return Temperature;
+        }
 
-          _temperatureCalculated = (TemperatureHighest + TemperatureLowest) / 2;
+        if (_temperatureCalculated != null)
+        {
           return _temperatureCalculated;
         }
-        catch (Exception)
+
+        if (TemperatureHighest == null || TemperatureLowest == null)
         {
-          //tba
-          return null;
+          Logger.Warn("TemperatureHighest or TemperatureLowest was not available this time.");
+          _temperatureCalculated = null;
         }
+        else
+        {
+          _temperatureCalculated = (TemperatureHighest + TemperatureLowest) / 2;
+        }
+        return _temperatureCalculated;
       }
     }
 
@@ -158,18 +175,18 @@ namespace DarkSkyWPF.Services.DarkSky.JSONModels
     /// The UNIX time at which this data point begins.
     /// </summary>
     [JsonProperty("time")]
-    public double UNIXTime { get; private set; }
+    public double? UNIXTime { get; private set; }
 
     /// <summary>
     /// The UV index.
     /// </summary>
     [JsonProperty("uvIndex")]
-    public double UVIndex { get; private set; }
+    public double? UVIndex { get; private set; }
 
     /// <summary>
     /// The wind speed in miles per hour.
     /// </summary>
     [JsonProperty("windSpeed")]
-    public double WindSpeed { get; private set; }
+    public double? WindSpeed { get; private set; }
   }
 }

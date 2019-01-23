@@ -70,6 +70,15 @@ namespace DarkSkyWPF.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CONNECTION ERROR!.
+        /// </summary>
+        public static string MainWindowConnectionErrorTextBlock {
+            get {
+                return ResourceManager.GetString("MainWindowConnectionErrorTextBlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Current weather:.
         /// </summary>
         public static string MainWindowCurrentWeatherHeaderTextBlock {

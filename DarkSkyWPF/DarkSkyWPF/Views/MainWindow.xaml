@@ -20,6 +20,7 @@
     </i:Interaction.Triggers>
 
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:UNIXTimeToDateConverter x:Key="UNIXTimeToDateConverter" />
         <DataTemplate x:Key="dailyWeatherTemplate">
             <Grid Margin="5">
@@ -64,6 +65,7 @@
 
     <DockPanel>
         <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+            <TextBlock Background="Red" Foreground="White" FontSize="20" Margin ="10,0,5,0" DockPanel.Dock="Left"  VerticalAlignment="Center" Visibility="{Binding IsThereAConnectionError, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}" Text="{lex:Loc Key=MainWindowConnectionErrorTextBlock}" />
             <ComboBox DockPanel.Dock="Right" Margin="10,3,10,3" ItemsSource="{Binding Source={x:Static lex:LocalizeDictionary.Instance}, Path=MergedAvailableCultures}"
                       SelectedItem="{Binding Source={x:Static lex:LocalizeDictionary.Instance}, Path=Culture}" 
                       DisplayMemberPath="NativeName" MinWidth="250" SelectedIndex="0" />
@@ -88,7 +90,7 @@
                                 <RowDefinition Height="2*" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0" Grid.ColumnSpan="3" FontSize="18" Text="{lex:Loc Key=MainWindowTemperatureTextBlock}" />
+                            <TextBlock Grid.Row="0" Grid.ColumnSpan="3" FontSize="18" Text="{lex:Loc Key=MainWindowCurrentWeatherHeaderTextBlock}" />
                             <Image Grid.Row="1" Grid.Column="0" Margin="0" VerticalAlignment="Top" Stretch="None" Source="{Binding Path=CurrentWeather.ImageSource}"></Image>
                             <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical">
                                 <StackPanel Orientation="Horizontal">

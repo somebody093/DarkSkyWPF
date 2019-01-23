@@ -12,7 +12,7 @@ namespace DarkSkyWPF
   /// </summary>
   public partial class App : Application
   {
-    protected async override void OnStartup(StartupEventArgs e)
+    protected override void OnStartup(StartupEventArgs e)
     {
       base.OnStartup(e);
 
