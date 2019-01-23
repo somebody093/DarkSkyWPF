@@ -120,6 +120,9 @@
   <data name="MainWindowChangeLanguageTextBlock" xml:space="preserve">
     <value>Change language:</value>
   </data>
+  <data name="MainWindowConnectionErrorTextBlock" xml:space="preserve">
+    <value>CONNECTION ERROR!</value>
+  </data>
   <data name="MainWindowCurrentWeatherHeaderTextBlock" xml:space="preserve">
     <value>Current weather:</value>
   </data>

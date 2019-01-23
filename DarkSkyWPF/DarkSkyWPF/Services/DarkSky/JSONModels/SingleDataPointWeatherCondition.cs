@@ -8,24 +8,24 @@ namespace DarkSkyWPF.Services.DarkSky.JSONModels
   public class SingleDataPointWeatherCondition : WeatherCondition
   {
     [JsonProperty("apparentTemperature")]
-    public double ApparentTemperature { get; private set; }
+    public double? ApparentTemperature { get; private set; }
 
     [JsonProperty("temperature")]
-    public double Temperature { get; private set; }
+    public double? Temperature { get; private set; }
 
     [JsonProperty("humidity")]
-    public double Humidity { get; private set; }
+    public double? Humidity { get; private set; }
 
     [JsonProperty("pressure")]
-    public double AtmosphericPressure { get; private set; }
+    public double? AtmosphericPressure { get; private set; }
 
     [JsonProperty("time")]
-    public double UNIXTime { get; private set; }
+    public double? UNIXTime { get; private set; }
 
     [JsonProperty("uvIndex")]
-    public double UVIndex { get; private set; }
+    public double? UVIndex { get; private set; }
 
     [JsonProperty("windSpeed")]
-    public double WindSpeed { get; private set; }
+    public double? WindSpeed { get; private set; }
   }
 }

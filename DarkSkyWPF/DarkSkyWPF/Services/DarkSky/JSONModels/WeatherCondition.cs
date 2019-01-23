@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using log4net;
+using Newtonsoft.Json;
+using System;
 
 namespace DarkSkyWPF.Services.DarkSky.JSONModels
 {
@@ -7,6 +9,7 @@ namespace DarkSkyWPF.Services.DarkSky.JSONModels
   /// </summary>
   public class WeatherCondition
   {
+    private static readonly ILog Logger = LogManager.GetLogger(typeof(WeatherCondition));
     private const string ImageRelativePath = @"\Images\";
     private const string FileNameEnding = ".png";
 
@@ -32,9 +35,10 @@ namespace DarkSkyWPF.Services.DarkSky.JSONModels
           {
             _imageSource = ImageRelativePath + System.Enum.GetName(typeof(IconValue), Icon) + FileNameEnding;
           }
-          catch (System.ArgumentNullException)
+          catch (ArgumentNullException ex)
           {
-            //logging
+            Logger.Error("Image is not available, Icon parsing to IconValue has failed.", ex);
+            _imageSource = null;
           }
 
           return _imageSource;

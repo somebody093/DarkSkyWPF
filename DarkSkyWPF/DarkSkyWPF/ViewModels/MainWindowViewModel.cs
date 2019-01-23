@@ -4,6 +4,7 @@ using DarkSkyWPF.Services.DarkSky.JSONModels;
 using DarkSkyWPF.Validation;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,10 +14,13 @@ namespace DarkSkyWPF.ViewModels
 {
   public class MainWindowViewModel : ViewModelBase
   {
+    private static readonly ILog Logger = LogManager.GetLogger(typeof(MainWindowViewModel));
+
     private readonly ICityService _cityService;
     private readonly IDarkSkyService _darkSkyService;
     private ObservableCollection<WeatherDataRoot> _availableWeatherInfo;
     private IEnumerable<City> _requiredListOfCities;
+    private bool _isThereAConnectionError;
 
     private RelayCommand _loadDataCommand;
 
@@ -26,6 +30,25 @@ namespace DarkSkyWPF.ViewModels
       _cityService = ArgumentValidation.ThrowIfNull<ICityService>(cityService, nameof(cityService));
       _darkSkyService = ArgumentValidation.ThrowIfNull<IDarkSkyService>(darkSkyService, nameof(darkSkyService));
       _availableWeatherInfo = new ObservableCollection<WeatherDataRoot>();
+      _isThereAConnectionError = false;
+    }
+
+    public bool IsThereAConnectionError
+    {
+      get
+      {
+        return _isThereAConnectionError;
+      }
+      private set
+      {
+        if (_isThereAConnectionError == value)
+        {
+          return;
+        }
+
+        _isThereAConnectionError = value;
+        RaisePropertyChanged(nameof(IsThereAConnectionError));
+      }
     }
 
     public ObservableCollection<WeatherDataRoot> AvailableWeatherInfo
@@ -50,14 +73,15 @@ namespace DarkSkyWPF.ViewModels
 
     private async Task LoadData()
     {
+      if (_requiredListOfCities != null)
+      {
+        return;
+      }
+
+      _requiredListOfCities = _cityService.AvilableCities;
+
       try
       {
-        if (_requiredListOfCities != null)
-        {
-          return;
-        }
-
-        _requiredListOfCities = _cityService.AvilableCities;
         //could be split to different chunks as well like 2 each or sg.
         foreach (City city in _requiredListOfCities)
         {
@@ -65,13 +89,14 @@ namespace DarkSkyWPF.ViewModels
           AvailableWeatherInfo.Add(weatherInfo);
         }
 
-        //testing what is quicker in terms of loading data
+        //testing what is quicker in terms of loading data -> one by one is fine.
         //IEnumerable<WeatherDataRoot> availableWeatherInfo  = await _darkSkyService.GetWeatherDataForMultipleCities(_requiredListOfCities);
         //AvailableWeatherInfo = new ObservableCollection<WeatherDataRoot>(availableWeatherInfo);
       }
-      catch (Exception)
+      catch (Exception ex)
       {
-        //todo: log/error message on ui or sg.
+        IsThereAConnectionError = true;
+        Logger.Error("An error occured while getting data from the Dark Sky Service. Please check details in the log.", ex);
       }     
     }
   }

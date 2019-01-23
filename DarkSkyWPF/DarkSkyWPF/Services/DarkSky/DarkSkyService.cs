@@ -1,11 +1,13 @@
 ﻿using DarkSkyWPF.Services.Cities;
 using DarkSkyWPF.Services.DarkSky.JSONModels;
 using DarkSkyWPF.Validation;
+using log4net;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace DarkSkyWPF.Services.DarkSky
@@ -15,6 +17,8 @@ namespace DarkSkyWPF.Services.DarkSky
   /// </summary>
   public class DarkSkyService : IDarkSkyService
   {
+    private static readonly ILog Logger = LogManager.GetLogger(typeof(DarkSkyService));
+
     private IWeatherDataRetriever _weatherDataRetriever;
     private readonly Uri _darkSkyForecastBaseUrl;
 
@@ -26,14 +30,7 @@ namespace DarkSkyWPF.Services.DarkSky
 
     public async Task<WeatherDataRoot> GetWeatherDataForCity(City city, ExcludeParameter excludeParameter = ExcludeParameter.AllExceptDailyAndCurrently, MetricSystem metricSystem = MetricSystem.AUTO)
     {
-      string relativeUrlWithQueryParams = BuildRelativeCityUrl(city, excludeParameter, metricSystem);
-
-      string rawWeatherData = await _weatherDataRetriever.FetchWeatherData(new Uri(_darkSkyForecastBaseUrl, relativeUrlWithQueryParams));
-
-      WeatherDataRoot weatherDataForCity = ParseWeatherDataFromStringResult(rawWeatherData);
-      weatherDataForCity.CityName = city.Name;
-
-      return weatherDataForCity;
+      return await ProcessCityWeatherDataQuery(city, excludeParameter, metricSystem);
     }
 
     public async Task<IEnumerable<WeatherDataRoot>> GetWeatherDataForMultipleCities(IEnumerable<City> cities, ExcludeParameter excludeParameter = ExcludeParameter.AllExceptDailyAndCurrently, MetricSystem metricSystem = MetricSystem.AUTO)
@@ -42,14 +39,57 @@ namespace DarkSkyWPF.Services.DarkSky
 
       foreach (City city in cities)
       {
-        string relativeUrlWithQueryParams = BuildRelativeCityUrl(city, excludeParameter, metricSystem);
-        string rawWeatherData = await _weatherDataRetriever.FetchWeatherData(new Uri(_darkSkyForecastBaseUrl, relativeUrlWithQueryParams));
+        WeatherDataRoot weatherDataForCity = await ProcessCityWeatherDataQuery(city, excludeParameter, metricSystem);
 
-        WeatherDataRoot weatherDataForCity = ParseWeatherDataFromStringResult(rawWeatherData);
-        weatherDataForCity.CityName = city.Name;
         weatherDataList.Add(weatherDataForCity);
       }
       return weatherDataList.ToArray();
+    }
+
+    private async Task<WeatherDataRoot> ProcessCityWeatherDataQuery(City city, ExcludeParameter excludeParameter, MetricSystem metricSystem)
+    {
+      string relativeUrlWithQueryParams = BuildRelativeCityUrl(ArgumentValidation.ThrowIfNull(city, nameof(city)), excludeParameter, metricSystem);
+
+      Uri fullUrl;
+      string rawWeatherData;
+
+      try
+      {
+        fullUrl = new Uri(_darkSkyForecastBaseUrl, relativeUrlWithQueryParams);
+        rawWeatherData = await _weatherDataRetriever.FetchWeatherData(fullUrl);
+      }
+      catch (UriFormatException ex)
+      {
+        Logger.Error("The DarkSky Forecast Request URL used has invalid format.", ex);
+        throw ex;
+      }
+      catch (HttpRequestException ex)
+      {
+        Logger.Error("The DarkSky Forecast Request failed due to an underlying issue e.g. network connectivity.", ex);
+        throw ex;
+      }
+      catch (ArgumentOutOfRangeException ex)
+      {
+        Logger.Error("The DarkSky Forecast Base URL processing was unsuccessful.", ex);
+        throw ex;
+      }
+      catch (ArgumentNullException ex)
+      {
+        Logger.Error("The DarkSky Forecast Base URL was null.", ex);
+        throw ex;
+      }
+
+      if (Logger.IsInfoEnabled)
+      {
+        Logger.Info($"Successful weather data retrieval for {city.Name} from URL: {fullUrl}");
+      }
+
+      WeatherDataRoot weatherDataForCity = ParseWeatherDataFromStringResult(rawWeatherData);
+      if (weatherDataForCity != null)
+      {
+        weatherDataForCity.CityName = city.Name;
+      }
+      return weatherDataForCity;
     }
 
     private WeatherDataRoot ParseWeatherDataFromStringResult(string rawWeatherData)
