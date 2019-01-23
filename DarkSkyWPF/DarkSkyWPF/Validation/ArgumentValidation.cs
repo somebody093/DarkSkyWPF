@@ -20,5 +20,22 @@ namespace DarkSkyWPF.Validation
 
       return value;
     }
+
+    public static string ThrowIfNullOrWhitespace(string value, string name)
+    {
+      ThrowIfNull(value, name);
+
+      if (value.Length == 0)
+      {
+        throw new ArgumentNullException("String cannot have zero length", name);
+      }
+
+      if (value.Trim().Length == 0)
+      {
+        throw new ArgumentNullException("String cannot only have whitespaces", name);
+      }
+
+      return value;
+    }
   }
 }

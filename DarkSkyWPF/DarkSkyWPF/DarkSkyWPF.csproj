@@ -115,6 +115,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Configuration\DarkSkyConfigurationManager.cs" />
+    <Compile Include="Configuration\IDarkSkyConfigurationManager.cs" />
     <Compile Include="Converters\UNIXTimeToDateConverter.cs" />
     <Compile Include="Services\Cities\City.cs" />
     <Compile Include="Services\Cities\CityService.cs" />
